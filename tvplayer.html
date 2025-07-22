@@ -9,7 +9,7 @@
     html, body {
       margin: 0;
       padding: 0;
-      background: #000;
+      background-color: #000;
       height: 100%;
       width: 100%;
       display: flex;
@@ -18,12 +18,20 @@
       overflow: hidden;
     }
 
+    #player-wrapper {
+      width: 100vw;
+      max-width: 900px;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
     #player-container {
-      width: 95vw;
-      height: 55vh;
+      width: 100%;
+      height: 60vh;
       position: relative;
-      background: #000;
+      margin: auto;
       overflow: hidden;
+      background: black;
     }
 
     .overlay-logo {
@@ -38,10 +46,8 @@
 
     @media (max-width: 768px) {
       #player-container {
-        width: 100vw;
-        height: 60vh;
+        height: 45vh;
       }
-
       .overlay-logo {
         width: 60px;
       }
@@ -61,17 +67,6 @@
       display: none !important;
     }
 
-    .jw-controlbar {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-    }
-
-    .jw-button-container {
-      display: flex !important;
-      align-items: center !important;
-    }
-
     .jw-controlbar-left .jw-icon-volume {
       display: inline-flex !important;
     }
@@ -87,7 +82,9 @@
   </style>
 </head>
 <body oncontextmenu="return false">
-  <div id="player-container"></div>
+  <div id="player-wrapper">
+    <div id="player-container"></div>
+  </div>
 
   <script>
     const player = jwplayer("player-container").setup({

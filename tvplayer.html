@@ -6,32 +6,30 @@
   <title>JPV RADIO TV</title>
   <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      background-color: #000;
-      height: 100%;
-      width: 100%;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-    }
-
-    #player-wrapper {
-      width: 100vw;
-      max-width: 900px;
-      padding: 0 10px;
-      box-sizing: border-box;
     }
 
     #player-container {
       width: 100%;
-      height: 60vh;
+      max-width: 1200px;
+      height: 75vh;
       position: relative;
-      margin: auto;
-      overflow: hidden;
-      background: black;
+    }
+
+    .jwplayer video {
+      object-fit: contain !important;
     }
 
     .overlay-logo {
@@ -41,21 +39,25 @@
       pointer-events: none;
     }
 
-    .top-left { left: 10px; }
-    .top-right { right: 10px; }
+    .top-left {
+      left: 10px;
+      width: 80px;
+    }
+
+    .top-right {
+      right: 10px;
+      width: 100px;
+    }
 
     @media (max-width: 768px) {
       #player-container {
-        height: 45vh;
+        height: 50vh;
       }
-      .overlay-logo {
+      .top-left {
+        width: 50px;
+      }
+      .top-right {
         width: 60px;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .overlay-logo {
-        width: 100px;
       }
     }
 
@@ -82,9 +84,7 @@
   </style>
 </head>
 <body oncontextmenu="return false">
-  <div id="player-wrapper">
-    <div id="player-container"></div>
-  </div>
+  <div id="player-container"></div>
 
   <script>
     const player = jwplayer("player-container").setup({
@@ -94,10 +94,10 @@
       height: "100%",
       autostart: true,
       mute: true,
+      stretching: "uniform",
       displaytitle: true,
       title: "JPV RADIO TV",
       controls: true,
-      stretching: "uniform",
       abouttext: "JPV RADIO TV",
       aboutlink: "https://jpvradio.online/"
     });
@@ -120,21 +120,18 @@
     // Anti-inspect
     document.addEventListener('keydown', function (e) {
       if (
-        e.keyCode === 123 || // F12
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
-        (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
-        (e.ctrlKey && (e.key === 'S' || e.key === 's')) ||
-        (e.ctrlKey && (e.key === 'C' || e.key === 'c'))
+        e.keyCode === 123 ||
+        (e.ctrlKey && e.shiftKey && ['I', 'i'].includes(e.key)) ||
+        (e.ctrlKey && ['U', 'u', 'S', 's', 'C', 'c'].includes(e.key))
       ) {
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
-    }, true);
+    });
 
     document.addEventListener("contextmenu", function (e) {
       e.preventDefault();
-    }, false);
+    });
   </script>
 </body>
 </html>

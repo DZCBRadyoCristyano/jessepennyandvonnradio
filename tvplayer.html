@@ -19,9 +19,8 @@
     }
 
     #player-container {
-      width: 100%;
-      max-width: 100%;
-      aspect-ratio: 16 / 9;
+      width: 95vw;
+      height: 55vh;
       position: relative;
       background: #000;
       overflow: hidden;
@@ -38,6 +37,11 @@
     .top-right { right: 10px; }
 
     @media (max-width: 768px) {
+      #player-container {
+        width: 100vw;
+        height: 60vh;
+      }
+
       .overlay-logo {
         width: 60px;
       }

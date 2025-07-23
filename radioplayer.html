@@ -3,43 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <title>JPV RADIO PLAYER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background: #111;
       color: #fff;
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
 
     .audio-wrapper {
       background: #222;
-      padding: 20px 30px;
+      padding: 20px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
       text-align: center;
-      width: 300px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 80%;
+      max-width: 200px;
+      margin-bottom: 15px;
     }
 
     .audio-wrapper h3 {
-      margin-bottom: 10px;
-      color: #FFA500; /* Neon orange */
+      margin-bottom: 15px;
+      color: #FFA500;
       text-shadow: 0 0 10px #FFA500;
+      font-size: 1.5em;
     }
 
     audio {
       width: 100%;
-      outline: none;
       border-radius: 8px;
       background-color: #333;
+    }
+
+    @media (max-width: 480px) {
+      .audio-wrapper {
+        padding: 15px;
+      }
+
+      .audio-wrapper h3 {
+        font-size: 1.2em;
+      }
+
+      .logo {
+        width: 70%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="audio-wrapper">
+    <img src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo" class="logo">
     <h3>JPV RADIO PLAYER</h3>
     <audio controls>
       <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">

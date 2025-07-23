@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jesse Penny and Vonn Radio and Television Network Radio Player</title>
+  <meta charset="UTF-8">
+  <title>JPV RADIO PLAYER</title>
   <style>
-    html, body {
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      overflow: hidden;
     }
 
-    iframe {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      border: none;
+    .audio-wrapper {
+      background: #222;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+      text-align: center;
+      width: 300px;
+    }
+
+    .audio-wrapper h3 {
+      margin-bottom: 10px;
+      color: #FFA500; /* Neon orange */
+      text-shadow: 0 0 10px #FFA500;
+    }
+
+    audio {
+      width: 100%;
+      outline: none;
+      border-radius: 8px;
+      background-color: #333;
     }
   </style>
-  <script>
-    // Disable right-click
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-
-    // Disable F12, Ctrl+Shift+I/J/C/U
-    document.onkeydown = function (e) {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase())) ||
-        (e.ctrlKey && e.key.toUpperCase() === "U")
-      ) {
-        return false;
-      }
-    };
-  </script>
 </head>
 <body>
-  <iframe src="https://listen2.streamaudio.co/public/8012" allowfullscreen></iframe>
+  <div class="audio-wrapper">
+    <h3>JPV RADIO PLAYER</h3>
+    <audio controls>
+      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
 </body>
 </html>

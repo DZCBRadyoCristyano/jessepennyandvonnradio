@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <title>JPV RADIO PLAYER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       background: #111;
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
       display: flex;
@@ -34,10 +35,33 @@
     }
 
     .audio-wrapper h3 {
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       color: #FFA500;
       text-shadow: 0 0 10px #FFA500;
       font-size: 1.5em;
+      font-weight: 600;
+    }
+
+    #now-playing {
+      font-size: 1em;
+      color: #FFA500;
+      margin-bottom: 15px;
+      text-shadow: 0 0 5px #FFA500;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    #now-playing span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 12s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
     }
 
     audio {
@@ -55,6 +79,10 @@
         font-size: 1.2em;
       }
 
+      #now-playing {
+        font-size: 0.9em;
+      }
+
       .logo {
         width: 70%;
       }
@@ -65,10 +93,50 @@
   <div class="audio-wrapper">
     <img src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo" class="logo">
     <h3>JPV RADIO PLAYER</h3>
+    <div id="now-playing"><span>Loading current song...</span></div>
     <audio controls>
       <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
   </div>
+
+  <script>
+    function cleanTitle(title) {
+      const unwantedPatterns = [
+        /track\s*\d+/gi,
+        /adm\s*\d+/gi,
+        /lyrics?/gi,
+        /official\s*video/gi,
+        /youtube/gi,
+        /HD\s*/gi,
+        /\[\s*.*?\s*\]/g,
+        /\(\s*.*?\s*\)/g,
+        /OST/gi,
+        /karaoke/gi,
+        /demo/gi
+      ];
+      let cleaned = title;
+      unwantedPatterns.forEach(pattern => {
+        cleaned = cleaned.replace(pattern, '');
+      });
+      return cleaned.trim();
+    }
+
+    async function fetchNowPlaying() {
+      try {
+        const response = await fetch('https://listen2.streamaudio.co/json/stream/8012');
+        const data = await response.json();
+        let title = data.nowplaying ? data.nowplaying.song : "Not Available";
+        title = cleanTitle(title);
+        const displayText = title || "Unavailable";
+        document.getElementById('now-playing').innerHTML = `<span>Now Playing: ${displayText}</span>`;
+      } catch (e) {
+        document.getElementById('now-playing').innerHTML = `<span>Now Playing: Offline or unavailable</span>`;
+      }
+    }
+
+    fetchNowPlaying();
+    setInterval(fetchNowPlaying, 15000);
+  </script>
 </body>
 </html>

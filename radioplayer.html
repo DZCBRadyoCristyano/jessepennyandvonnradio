@@ -1,224 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JPV RADIO PLAYER</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png">
   <style>
     * {
-      box-sizing: border-box;
-    }
-
-    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      font-family: 'Poppins', sans-serif;
-      background: #000;
-      overflow: hidden;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    .audio-wrapper {
-      position: relative;
-      z-index: 1;
-      background: rgba(0, 0, 0, 0.75);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(255, 165, 0, 0.7);
+    body {
+      background: url('https://i.ibb.co/39T47SGw/jpv-radio-background.gif') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
       text-align: center;
-      width: 90%;
-      max-width: 400px;
-      margin: 0 auto;
-      top: 50%;
-      transform: translateY(-50%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
     }
 
     .logo {
-      width: 80%;
-      max-width: 200px;
-      margin-bottom: 15px;
+      width: 120px;
+      margin: 0 auto 15px;
     }
 
-    h3 {
+    h1 {
       color: #FFA500;
       text-shadow: 0 0 10px #FFA500;
-      margin-bottom: 10px;
-    }
-
-    #now-playing {
-      font-size: 1em;
-      color: #FFA500;
+      font-size: 2em;
       margin-bottom: 15px;
-      text-shadow: 0 0 5px #FFA500;
-      white-space: nowrap;
-      overflow: hidden;
     }
 
-    #now-playing span {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 12s linear infinite;
-    }
-
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
+    .player {
+      margin: 20px auto;
     }
 
     audio {
       width: 100%;
-      border-radius: 8px;
-      background-color: #222;
+      max-width: 350px;
+      outline: none;
+      border-radius: 10px;
     }
 
-    #start-btn {
+    .now-playing {
       margin-top: 15px;
-      background-color: #FFA500;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
+      font-size: 1.1em;
+      color: #fff;
+      text-shadow: 0 0 5px #FFA500;
     }
 
-    #start-btn:hover {
-      background-color: #ffbb33;
-    }
-
-    @media (max-width: 480px) {
-      .audio-wrapper {
-        padding: 15px;
-      }
-
-      h3 {
-        font-size: 1.2em;
-      }
-
-      #now-playing {
-        font-size: 0.9em;
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5em;
       }
 
       .logo {
-        width: 70%;
+        width: 90px;
       }
     }
   </style>
 </head>
 <body>
+  <img class="logo" src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo">
+  <h1>JPV RADIO PLAYER</h1>
 
-<canvas id="visualizer"></canvas>
+  <div class="player">
+    <audio controls>
+      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
 
-<div class="audio-wrapper">
-  <img src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo" class="logo">
-  <h3>JPV RADIO PLAYER</h3>
-  <div id="now-playing"><span>Loading current song...</span></div>
-  <audio id="audio-player">
-    <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-  <button id="start-btn">▶ Start Audio</button>
-</div>
+  <div class="now-playing" id="nowPlaying">Now Playing: Loading...</div>
 
-<script>
-  function cleanTitle(title) {
-    const unwantedPatterns = [
-      /track\s*\d+/gi,
-      /adm\s*\d+/gi,
-      /lyrics?/gi,
-      /official\s*video/gi,
-      /youtube/gi,
-      /HD\s*/gi,
-      /\[\s*.*?\s*\]/g,
-      /\(\s*.*?\s*\)/g,
-      /OST/gi,
-      /karaoke/gi,
-      /demo/gi
-    ];
-    let cleaned = title;
-    unwantedPatterns.forEach(pattern => {
-      cleaned = cleaned.replace(pattern, '');
-    });
-    return cleaned.trim();
-  }
+  <script>
+    function cleanTitle(title) {
+      const unwantedPatterns = [
+        /track\s*\d+/gi,
+        /adm\s*\d+/gi,
+        /official\s*(video|audio)?/gi,
+        /lyrics?/gi,
+        /with\s*lyrics/gi,
+        /HD|HQ/gi,
+        /youtube/gi,
+        /MV|visualizer/gi,
+        /live\s*(performance)?/gi,
+        /remix|original mix|extended mix|radio edit|instrumental/gi,
+        /cover/gi,
+        /promo only/gi,
+        /unofficial/gi,
+        /album version/gi,
+        /audio only/gi,
+        /[\[\(].*?[\]\)]/g,
+        /\b\d{4}\b/g
+      ];
 
-  async function fetchNowPlaying() {
-    try {
-      const response = await fetch('https://listen2.streamaudio.co/json/stream/8012');
-      const data = await response.json();
-      let title = data.nowplaying || "Not Available";
-      title = cleanTitle(title);
-      document.getElementById('now-playing').innerHTML = `<span>Now Playing: ${title}</span>`;
-    } catch {
-      document.getElementById('now-playing').innerHTML = `<span>Now Playing: Offline or unavailable</span>`;
+      let cleaned = title;
+      unwantedPatterns.forEach(pattern => {
+        cleaned = cleaned.replace(pattern, '');
+      });
+
+      return cleaned.replace(/[-–—_:]+/g, ' ').replace(/\s+/g, ' ').trim();
     }
-  }
 
-  fetchNowPlaying();
-  setInterval(fetchNowPlaying, 15000);
+    async function updateNowPlaying() {
+      try {
+        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://listen2.streamaudio.co/json/stream/8012'));
+        const data = await res.json();
+        const parsed = JSON.parse(data.contents);
 
-  const canvas = document.getElementById('visualizer');
-  const ctx = canvas.getContext('2d');
-  const audio = document.getElementById('audio-player');
-  const startBtn = document.getElementById('start-btn');
+        let song = parsed.nowplaying || 'Unavailable';
+        song = cleanTitle(song);
 
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const analyser = audioCtx.createAnalyser();
-  const source = audioCtx.createMediaElementSource(audio);
-  source.connect(analyser);
-  analyser.connect(audioCtx.destination);
-  analyser.fftSize = 256;
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  function draw() {
-    requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
-
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const barWidth = (canvas.width / bufferLength) * 2.5;
-    let barHeight;
-    let x = 0;
-
-    for (let i = 0; i < bufferLength; i++) {
-      barHeight = dataArray[i] * 1.5;
-      const r = 255;
-      const g = 100 + (barHeight / 4);
-      const b = 0;
-      ctx.fillStyle = `rgb(${r},${g},${b})`;
-      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-      x += barWidth + 1;
+        document.getElementById('nowPlaying').textContent = "Now Playing: " + song;
+      } catch (error) {
+        document.getElementById('nowPlaying').textContent = "Now Playing: Offline or unavailable";
+      }
     }
-  }
 
-  startBtn.addEventListener('click', async () => {
-    await audioCtx.resume();  // resume AudioContext
-    audio.play();             // manually start audio
-    draw();                   // start visualizer
-    startBtn.style.display = 'none';
-  });
-</script>
-
+    updateNowPlaying();
+    setInterval(updateNowPlaying, 15000); // refresh every 15 seconds
+  </script>
 </body>
 </html>

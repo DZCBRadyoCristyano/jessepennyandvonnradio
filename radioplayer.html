@@ -4,80 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JPV RADIO PLAYER</title>
-  <link rel="icon" href="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png">
   <style>
-    * {
+    body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      background: url('https://i.ibb.co/39T47SGw/jpv-radio-background.gif') no-repeat center center fixed;
-      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000;
       color: #fff;
       text-align: center;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
       padding: 20px;
     }
 
-    .logo {
-      width: 120px;
-      margin: 0 auto 15px;
+    .bg {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .bg img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
     }
 
     h1 {
-      color: #FFA500;
-      text-shadow: 0 0 10px #FFA500;
-      font-size: 2em;
+      font-size: 1.8rem;
+      color: orange;
+      text-shadow: 0 0 10px #ff9900;
       margin-bottom: 15px;
     }
 
-    .player {
-      margin: 20px auto;
+    .now-playing {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #ffd580;
     }
 
     audio {
       width: 100%;
-      max-width: 350px;
       outline: none;
-      border-radius: 10px;
-    }
-
-    .now-playing {
-      margin-top: 15px;
-      font-size: 1.1em;
-      color: #fff;
-      text-shadow: 0 0 5px #FFA500;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5em;
-      }
-
-      .logo {
-        width: 90px;
-      }
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <img class="logo" src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo">
-  <h1>JPV RADIO PLAYER</h1>
+  <div class="container">
+    <h1>JPV RADIO PLAYER</h1>
 
-  <div class="player">
+    <div class="bg">
+      <img src="https://i.ibb.co/39T47SGw/jpv-radio-background.gif" alt="JPV Background" />
+    </div>
+
+    <div class="now-playing" id="nowPlaying">Now Playing: Loading...</div>
+
     <audio controls>
       <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
   </div>
-
-  <div class="now-playing" id="nowPlaying">Now Playing: Loading...</div>
 
   <script>
     function cleanTitle(title) {
@@ -97,35 +87,34 @@
         /unofficial/gi,
         /album version/gi,
         /audio only/gi,
-        /[\[\(].*?[\]\)]/g,
-        /\b\d{4}\b/g
+        /[\[\(].*?[\]\)]/g, // remove [brackets] or (parentheses)
+        /\b\d{4}\b/g // remove years like 2020
       ];
-
       let cleaned = title;
       unwantedPatterns.forEach(pattern => {
         cleaned = cleaned.replace(pattern, '');
       });
-
-      return cleaned.replace(/[-–—_:]+/g, ' ').replace(/\s+/g, ' ').trim();
+      cleaned = cleaned.replace(/[-–—_:]+/g, ' ').replace(/\s+/g, ' ').trim();
+      return cleaned;
     }
 
-    async function updateNowPlaying() {
+    async function fetchNowPlaying() {
       try {
-        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://listen2.streamaudio.co/json/stream/8012'));
+        const res = await fetch('https://listen2.streamaudio.co/json/stream/8012');
         const data = await res.json();
-        const parsed = JSON.parse(data.contents);
-
-        let song = parsed.nowplaying || 'Unavailable';
-        song = cleanTitle(song);
-
-        document.getElementById('nowPlaying').textContent = "Now Playing: " + song;
+        if (data.status && data.nowplaying) {
+          const cleaned = cleanTitle(data.nowplaying);
+          document.getElementById('nowPlaying').textContent = `Now Playing: ${cleaned}`;
+        } else {
+          document.getElementById('nowPlaying').textContent = "Now Playing: Offline or unavailable";
+        }
       } catch (error) {
-        document.getElementById('nowPlaying').textContent = "Now Playing: Offline or unavailable";
+        document.getElementById('nowPlaying').textContent = "Now Playing: Error fetching data";
       }
     }
 
-    updateNowPlaying();
-    setInterval(updateNowPlaying, 15000); // refresh every 15 seconds
+    fetchNowPlaying();
+    setInterval(fetchNowPlaying, 15000); // auto refresh every 15 seconds
   </script>
 </body>
 </html>

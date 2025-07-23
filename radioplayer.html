@@ -81,6 +81,22 @@
       background-color: #222;
     }
 
+    #start-btn {
+      margin-top: 15px;
+      background-color: #FFA500;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #start-btn:hover {
+      background-color: #ffbb33;
+    }
+
     @media (max-width: 480px) {
       .audio-wrapper {
         padding: 15px;
@@ -108,10 +124,11 @@
   <img src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo" class="logo">
   <h3>JPV RADIO PLAYER</h3>
   <div id="now-playing"><span>Loading current song...</span></div>
-  <audio id="audio-player" controls autoplay>
+  <audio id="audio-player">
     <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
+  <button id="start-btn">▶ Start Audio</button>
 </div>
 
 <script>
@@ -151,10 +168,10 @@
   fetchNowPlaying();
   setInterval(fetchNowPlaying, 15000);
 
-  // 🎵 Visualizer Setup
   const canvas = document.getElementById('visualizer');
   const ctx = canvas.getContext('2d');
-  let audio = document.getElementById('audio-player');
+  const audio = document.getElementById('audio-player');
+  const startBtn = document.getElementById('start-btn');
 
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const analyser = audioCtx.createAnalyser();
@@ -169,6 +186,7 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
+
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
@@ -188,16 +206,17 @@
       const r = 255;
       const g = 100 + (barHeight / 4);
       const b = 0;
-
       ctx.fillStyle = `rgb(${r},${g},${b})`;
       ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
       x += barWidth + 1;
     }
   }
 
-  audio.addEventListener('play', () => {
-    audioCtx.resume();
-    draw();
+  startBtn.addEventListener('click', async () => {
+    await audioCtx.resume();  // resume AudioContext
+    audio.play();             // manually start audio
+    draw();                   // start visualizer
+    startBtn.style.display = 'none';
   });
 </script>
 

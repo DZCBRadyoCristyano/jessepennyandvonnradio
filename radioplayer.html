@@ -7,80 +7,59 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #000;
+      font-family: Arial, sans-serif;
+      background: url('https://i.ibb.co/39T47SGw/jpv-radio-background.gif') no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
       text-align: center;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
 
     .logo {
-      width: 150px;
-      margin: 10px auto;
-    }
-
-    .logo img {
-      width: 100%;
-      height: auto;
-    }
-
-    .bg {
-      width: 100%;
-      margin: 10px auto;
-    }
-
-    .bg img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      color: orange;
-      text-shadow: 0 0 10px #ff9900;
+      max-width: 200px;
       margin-bottom: 15px;
     }
 
-    .now-playing {
-      font-size: 1.1rem;
+    h1 {
+      margin: 10px 0;
+      color: #FFA500;
+      font-size: 1.8em;
+      text-shadow: 0 0 5px #000;
+    }
+
+    .info-box {
+      background-color: rgba(0,0,0,0.5);
+      padding: 10px 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      max-width: 90%;
       font-weight: bold;
-      margin: 15px 0;
-      color: #ffd580;
+      font-size: 1.1em;
+      text-shadow: 0 0 3px #000;
     }
 
     audio {
-      width: 100%;
-      outline: none;
-      margin-top: 10px;
+      margin-top: 15px;
+      width: 90%;
+      max-width: 400px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo">
-      <img src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo">
-    </div>
+  <img class="logo" src="https://i.ibb.co/JWTs9kQY/jesse-penny-and-vonn-logo-removebg-preview.png" alt="JPV Logo" />
+  <h1>JPV RADIO PLAYER</h1>
 
-    <h1>JPV RADIO PLAYER</h1>
+  <audio controls>
+    <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
-    <div class="bg">
-      <img src="https://i.ibb.co/39T47SGw/jpv-radio-background.gif" alt="JPV Background" />
-    </div>
-
-    <div class="now-playing" id="nowPlaying">Now Playing: Loading...</div>
-
-    <audio controls>
-      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
+  <div id="nowPlaying" class="info-box">Loading current song...</div>
+  <div id="listenerCount" class="info-box">Loading listener count...</div>
 
   <script>
     function cleanTitle(title) {
@@ -89,7 +68,7 @@
         /adm\s*\d+/gi,
         /official\s*(video|audio)?/gi,
         /lyrics?/gi,
-        /with\s*lyrics/gi,
+        /with\s*lyrics?/gi,
         /HD|HQ/gi,
         /youtube/gi,
         /MV|visualizer/gi,
@@ -100,7 +79,15 @@
         /unofficial/gi,
         /album version/gi,
         /audio only/gi,
-        /\b\d{1,4}\b/g, // REMOVE all numbers 1 to 9999
+        /\b\d{1,4}\b/g,
+        /\bcopy(ing|ied)?\b/gi,
+        /\bduplicate\b/gi,
+        /\bdownload(ed|able)?\b/gi,
+        /\bre[- ]?upload(ed)?\b/gi,
+        /with/gi,
+        /high\s*quality/gi,
+        /stereo/gi,
+        /\.mp3|\.mp4|\.wav|\.m4a|\.aac|\.flac|\.ogg|\.wma|\.webm/gi,
         /[\[\(].*?[\]\)]/g,
         /[-–—_:]+/g
       ];
@@ -108,27 +95,27 @@
       unwantedPatterns.forEach(pattern => {
         cleaned = cleaned.replace(pattern, '');
       });
-      cleaned = cleaned.replace(/\s+/g, ' ').trim();
-      return cleaned;
+      return cleaned.replace(/\s+/g, ' ').trim();
     }
 
-    async function fetchNowPlaying() {
+    async function fetchInfo() {
       try {
-        const res = await fetch('https://listen2.streamaudio.co/json/stream/8012');
-        const data = await res.json();
-        if (data.status && data.nowplaying) {
-          const cleaned = cleanTitle(data.nowplaying);
-          document.getElementById('nowPlaying').textContent = `Now Playing: ${cleaned}`;
-        } else {
-          document.getElementById('nowPlaying').textContent = "Now Playing: Offline or unavailable";
-        }
+        const response = await fetch('https://listen2.streamaudio.co/json/stream/8012');
+        const data = await response.json();
+        const rawTitle = data.nowplaying || 'No title';
+        const listeners = data.connections || 0;
+        const cleanedTitle = cleanTitle(rawTitle);
+
+        document.getElementById('nowPlaying').textContent = `Now Playing: ${cleanedTitle}`;
+        document.getElementById('listenerCount').textContent = `Listeners: ${listeners}`;
       } catch (error) {
-        document.getElementById('nowPlaying').textContent = "Now Playing: Error fetching data";
+        document.getElementById('nowPlaying').textContent = 'Unable to load song info.';
+        document.getElementById('listenerCount').textContent = 'Unable to load listener count.';
       }
     }
 
-    fetchNowPlaying();
-    setInterval(fetchNowPlaying, 15000); // refresh every 15 seconds
+    fetchInfo();
+    setInterval(fetchInfo, 15000); // update every 15 seconds
   </script>
 </body>
 </html>

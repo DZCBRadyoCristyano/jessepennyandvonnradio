@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JPV RADIO PLAYER</title>
   <style>
     body {
@@ -13,83 +13,102 @@
       color: white;
       text-align: center;
     }
-    .logo {
-      width: 180px;
-      margin-top: 20px;
-    }
-    .player-container {
-      margin-top: 30px;
+    .container {
       padding: 20px;
-      background-color: rgba(0,0,0,0.6);
-      border-radius: 15px;
-      display: inline-block;
+      background: rgba(0, 0, 0, 0.7);
+      max-width: 600px;
+      margin: 40px auto;
+      border-radius: 20px;
+    }
+    .logo {
+      max-width: 200px;
+      margin-bottom: 20px;
     }
     audio {
       width: 100%;
-      max-width: 300px;
-      margin: 20px 0;
+      margin: 15px 0;
     }
-    .now-playing {
+    .nowplaying {
       font-size: 1.2rem;
       font-weight: bold;
-      color: #FFA500;
-      margin-bottom: 10px;
+      margin-top: 10px;
+      word-wrap: break-word;
     }
     .listeners {
-      font-size: 0.9rem;
-      color: #ddd;
+      font-size: 0.95rem;
+      color: #FF9800;
+      margin-top: 5px;
     }
-    @media (max-width: 600px) {
-      .logo {
-        width: 130px;
-      }
-      .now-playing {
+    @media (max-width: 480px) {
+      .nowplaying {
         font-size: 1rem;
+      }
+      .logo {
+        max-width: 150px;
       }
     }
   </style>
 </head>
 <body>
-  <img src="https://jpvradio.online/jesse%20penny%20and%20vonn%20logo.jpg" alt="JPV Logo" class="logo" />
-
-  <div class="player-container">
+  <div class="container">
+    <img src="https://jpvradio.online/jesse%20penny%20and%20vonn%20logo.jpg" alt="JPV Radio Logo" class="logo" />
     <audio controls>
-      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg" />
+      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
-
-    <div class="now-playing" id="nowPlaying">Loading...</div>
-    <div class="listeners" id="listenerCount">Listeners: --</div>
+    <div class="nowplaying" id="nowplaying">Loading...</div>
+    <div class="listeners" id="listeners"></div>
   </div>
 
   <script>
-    async function fetchNowPlaying() {
+    function cleanTitle(title) {
+      const filters = [
+        /\btrack\s?\d{1,4}\b/gi,
+        /\badm\s?\d{1,4}\b/gi,
+        /\bofficial( video| audio| lyric video)?\b/gi,
+        /\blyric(s)?( video)?\b/gi,
+        /\bwith lyrics\b/gi,
+        /\bcopy\b/gi,
+        /\b(stereo|hq|hd|high quality)\b/gi,
+        /\b(mp3|mp4|\.mp3|\.mp4)\b/gi,
+        /\bmusic video\b/gi,
+        /\bofficial\b/gi,
+        /\bmusic\b/gi,
+        /\bvideo\b/gi
+      ];
+
+      let cleaned = title;
+      filters.forEach(pattern => {
+        cleaned = cleaned.replace(pattern, '');
+      });
+
+      // Remove extra dashes or spaces left behind
+      cleaned = cleaned.replace(/[-–]{2,}/g, '-'); // Replace double dashes
+      cleaned = cleaned.replace(/(\s*-+\s*)/g, ' - ');
+      cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+
+      // Capitalize first letter of each word (optional)
+      return cleaned || "Now Playing";
+    }
+
+    async function updateNowPlaying() {
       try {
         const response = await fetch("https://listen2.streamaudio.co/json/stream/8012");
         const data = await response.json();
+        const rawTitle = data.nowplaying || "Now Playing";
+        const connections = data.connections || 0;
 
-        let title = data.nowplaying || "Unknown";
-        let listeners = data.connections || 0;
-
-        // Clean the title with advanced filters
-        title = title
-          .replace(/(\.mp3|\.mp4|\.wav|\.mkv|\.flac|\.avi|\.mov)/gi, "")
-          .replace(/\b(track ?\d{1,3}|adm ?\d{1,3}|lyrics?|stereo|copy|youtube|with|music|high quality|hq|hd|official( music)?( video)?|music video|visualizer|feat\.?|featuring|cover|remastered|audio|mv|version|video)\b/gi, "")
-          .replace(/\d{1,4}/g, "")
-          .replace(/[-_]+/g, " ")
-          .replace(/\s+/g, " ")
-          .trim();
-
-        document.getElementById("nowPlaying").innerText = "Now Playing: " + title;
-        document.getElementById("listenerCount").innerText = "Listeners: " + listeners;
+        const cleanedTitle = cleanTitle(rawTitle);
+        document.getElementById('nowplaying').textContent = cleanedTitle;
+        document.getElementById('listeners').textContent = `Listeners: ${connections}`;
       } catch (error) {
-        document.getElementById("nowPlaying").innerText = "Now Playing: Unavailable";
-        document.getElementById("listenerCount").innerText = "Listeners: --";
+        document.getElementById('nowplaying').textContent = "Now Playing: Unavailable";
+        document.getElementById('listeners').textContent = "";
       }
     }
 
-    fetchNowPlaying();
-    setInterval(fetchNowPlaying, 10000); // refresh every 10s
+    updateNowPlaying();
+    setInterval(updateNowPlaying, 10000); // every 10 seconds
   </script>
 </body>
 </html>

@@ -70,10 +70,10 @@
         if (data.status && data.nowplaying) {
           let title = data.nowplaying;
 
-          // Clean title
+          // Clean title with extended filters
           title = title
             .replace(/(\.mp3|\.mp4|\.wav|\.mkv|\.flac|\.avi|\.mov)/gi, "")
-            .replace(/\b(track|adm|lyrics|stereo|copy|youtube|with|high quality|hq|official|version|audio)\b/gi, "")
+            .replace(/\b(track|adm|lyrics|stereo|copy|youtube|with|high quality|hq|official|music video|version|audio)\b/gi, "")
             .replace(/\d{1,4}/g, "")
             .replace(/[-_]+/g, " ")
             .replace(/\s+/g, " ")
@@ -84,7 +84,6 @@
           document.getElementById("nowPlaying").textContent = "Now Playing: Offline or Unavailable";
         }
 
-        // Show listener count
         if (data.connections !== undefined) {
           document.getElementById("listeners").textContent = `Listeners: ${data.connections}`;
         }
@@ -95,7 +94,6 @@
       }
     }
 
-    // Initial fetch and auto-update every 15 seconds
     fetchNowPlaying();
     setInterval(fetchNowPlaying, 15000);
   </script>

@@ -7,58 +7,59 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://jpvradio.online/jpv%20radio%20background%20visualizer.gif') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
       text-align: center;
-      background: url('https://jpvradio.online/jpv%20radio%20background%20visualizer.gif') center center / cover no-repeat fixed;
     }
-
-    .container {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      max-width: 500px;
-      margin: 50px auto;
-      border-radius: 15px;
-    }
-
     .logo {
-      width: 120px;
-      margin-bottom: 20px;
+      width: 180px;
+      margin-top: 20px;
     }
-
+    .player-container {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.6);
+      border-radius: 15px;
+      display: inline-block;
+    }
     audio {
       width: 100%;
-      margin: 15px 0;
+      max-width: 300px;
+      margin: 20px 0;
     }
-
-    .nowplaying {
-      font-size: 1.2em;
+    .now-playing {
+      font-size: 1.2rem;
       font-weight: bold;
-      margin-top: 10px;
-      color: orange;
-      text-shadow: 1px 1px 2px #000;
+      color: #FFA500;
+      margin-bottom: 10px;
     }
-
     .listeners {
-      font-size: 0.9em;
-      color: #ccc;
-      margin-top: 5px;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+    @media (max-width: 600px) {
+      .logo {
+        width: 130px;
+      }
+      .now-playing {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img class="logo" src="https://jpvradio.online/jesse%20penny%20and%20vonn%20logo.jpg" alt="JPV Logo">
-    <h2>JPV RADIO PLAYER</h2>
+  <img src="https://jpvradio.online/jesse%20penny%20and%20vonn%20logo.jpg" alt="JPV Logo" class="logo" />
 
-    <audio id="audioPlayer" controls>
-      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg">
+  <div class="player-container">
+    <audio controls>
+      <source src="https://listen2.streamaudio.co/stream/8012" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
-    <div class="nowplaying" id="nowPlaying">Loading...</div>
-    <div class="listeners" id="listeners">Listeners: ...</div>
+    <div class="now-playing" id="nowPlaying">Loading...</div>
+    <div class="listeners" id="listenerCount">Listeners: --</div>
   </div>
 
   <script>
@@ -67,35 +68,28 @@
         const response = await fetch("https://listen2.streamaudio.co/json/stream/8012");
         const data = await response.json();
 
-        if (data.status && data.nowplaying) {
-          let title = data.nowplaying;
+        let title = data.nowplaying || "Unknown";
+        let listeners = data.connections || 0;
 
-          // Clean title with extended filters
-          title = title
-            .replace(/(\.mp3|\.mp4|\.wav|\.mkv|\.flac|\.avi|\.mov)/gi, "")
-            .replace(/\b(track|adm|lyrics|stereo|copy|youtube|with|high quality|hq|official|music video|version|audio)\b/gi, "")
-            .replace(/\d{1,4}/g, "")
-            .replace(/[-_]+/g, " ")
-            .replace(/\s+/g, " ")
-            .trim();
+        // Clean the title with advanced filters
+        title = title
+          .replace(/(\.mp3|\.mp4|\.wav|\.mkv|\.flac|\.avi|\.mov)/gi, "")
+          .replace(/\b(track ?\d{1,3}|adm ?\d{1,3}|lyrics?|stereo|copy|youtube|with|music|high quality|hq|hd|official( music)?( video)?|music video|visualizer|feat\.?|featuring|cover|remastered|audio|mv|version|video)\b/gi, "")
+          .replace(/\d{1,4}/g, "")
+          .replace(/[-_]+/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
 
-          document.getElementById("nowPlaying").textContent = `Now Playing: ${title}`;
-        } else {
-          document.getElementById("nowPlaying").textContent = "Now Playing: Offline or Unavailable";
-        }
-
-        if (data.connections !== undefined) {
-          document.getElementById("listeners").textContent = `Listeners: ${data.connections}`;
-        }
-
+        document.getElementById("nowPlaying").innerText = "Now Playing: " + title;
+        document.getElementById("listenerCount").innerText = "Listeners: " + listeners;
       } catch (error) {
-        document.getElementById("nowPlaying").textContent = "Now Playing: Error loading";
-        document.getElementById("listeners").textContent = "";
+        document.getElementById("nowPlaying").innerText = "Now Playing: Unavailable";
+        document.getElementById("listenerCount").innerText = "Listeners: --";
       }
     }
 
     fetchNowPlaying();
-    setInterval(fetchNowPlaying, 15000);
+    setInterval(fetchNowPlaying, 10000); // refresh every 10s
   </script>
 </body>
 </html>

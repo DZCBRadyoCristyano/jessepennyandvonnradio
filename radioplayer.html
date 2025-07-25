@@ -70,25 +70,29 @@
         /\bwith lyrics\b/gi,
         /\bcopy\b/gi,
         /\b(stereo|hq|hd|high quality)\b/gi,
-        /\b(mp3|mp4|\.mp3|\.mp4)\b/gi,
-        /\bmusic video\b/gi,
+        /\b(mp3|mp4|flac|wav|avi|mkv|mov|aac|ogg|webm|\.mp3|\.mp4|\.flac|\.wav|\.avi|\.mkv|\.mov|\.aac|\.ogg|\.webm)\b/gi,
+        /\bmusic( video)?\b/gi,
         /\bofficial\b/gi,
-        /\bmusic\b/gi,
-        /\bvideo\b/gi
+        /\bvideo\b/gi,
+        /\b\d{1,4}\b/g, // remove standalone numbers
       ];
 
       let cleaned = title;
+
+      // Remove common patterns
       filters.forEach(pattern => {
         cleaned = cleaned.replace(pattern, '');
       });
 
-      // Remove extra dashes or spaces left behind
-      cleaned = cleaned.replace(/[-–]{2,}/g, '-'); // Replace double dashes
-      cleaned = cleaned.replace(/(\s*-+\s*)/g, ' - ');
+      // Remove punctuation and special characters
+      cleaned = cleaned.replace(/[\[\]().,_\-]/g, '');
       cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
 
-      // Capitalize first letter of each word (optional)
-      return cleaned || "Now Playing";
+      // Capitalize first letter of each word
+      return cleaned
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ') || "Now Playing";
     }
 
     async function updateNowPlaying() {
@@ -108,7 +112,7 @@
     }
 
     updateNowPlaying();
-    setInterval(updateNowPlaying, 10000); // every 10 seconds
+    setInterval(updateNowPlaying, 10000);
   </script>
 </body>
 </html>

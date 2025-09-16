@@ -1,50 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Jesse Penny and Vonn Radio and Television Network Inc.</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-  }
-  .iframe-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-  }
-  .iframe-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
-</style>
-<script>
-// Disable right click
-document.addEventListener('contextmenu', event => event.preventDefault());
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>403 Forbidden</title>
+  <style>
+    body {
+      margin:0;
+      font-family:'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9800, #ff5722);
+      color:#fff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      min-height:100vh;
+      text-align:center;
+    }
+    .container {
+      background:#fff;
+      color:#333;
+      padding:40px 30px;
+      border-radius:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      max-width:500px;
+      width:90%;
+      animation:fadeIn 1s ease;
+    }
+    .logo {
+      max-width:120px;
+      margin-bottom:20px;
+    }
+    h1 {
+      font-size:64px;
+      margin:0;
+      color:#ff5722;
+      font-weight:800;
+    }
+    h2 {
+      font-size:22px;
+      margin:10px 0 20px;
+      color:#555;
+    }
+    p {
+      font-size:14px;
+      color:#666;
+      margin-bottom:25px;
+    }
+    .btn {
+      padding:12px 24px;
+      border:none;
+      border-radius:8px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      background:#ff9800;
+      color:#fff;
+      transition:background 0.3s;
+    }
+    .btn:hover {
+      background:#e67e00;
+    }
+    footer {
+      margin-top:20px;
+      font-size:12px;
+      color:#eee;
+    }
 
-// Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-document.onkeydown = function(e) {
-    if (e.keyCode == 123) { // F12
-        return false;
+    /* Fake admin modal */
+    .modal-backdrop {
+      position:fixed; inset:0; display:none;
+      align-items:center; justify-content:center;
+      background:rgba(0,0,0,0.6); z-index:1000;
     }
-    if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) {
-        return false;
+    .modal {
+      background:#fff; padding:20px; border-radius:10px;
+      max-width:360px; width:90%; text-align:left;
     }
-    if (e.ctrlKey && e.keyCode == 85) {
-        return false;
+    .modal h3 { margin:0 0 10px; color:#ff5722; }
+    .modal input {
+      width:100%; padding:10px; border:1px solid #ccc;
+      border-radius:6px; margin-bottom:10px;
     }
-};
-</script>
+    .modal .err { color:#b91c1c; display:none; font-size:13px; margin-bottom:10px; }
+    .modal .actions { text-align:right; }
+    .ghost {
+      background:#f1f1f1; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;
+    }
+
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(20px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+  </style>
 </head>
 <body>
-  <div class="iframe-container">
-    <iframe src="https://k5v8r1t3w9z6.weebly.com/" allowfullscreen></iframe>
+  <div class="container">
+    <img src="https://jpvradio.online/JPV%20RADIO%20LOGO.png" alt="JPV Radio Logo" class="logo">
+    <h1>403</h1>
+    <h2>Forbidden</h2>
+    <p>You don’t have permission to access this resource.<br>Maintenance may be in progress.</p>
+    <button class="btn" onclick="openAdmin()">Admin Login</button>
   </div>
+
+  <footer>
+    © 2025 Jesse Penny and Vonn Radio and Television Network Inc.
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="adminModal">
+    <div class="modal">
+      <h3>Admin Login</h3>
+      <form id="fakeAdminForm">
+        <input type="text" placeholder="Username" required>
+        <input type="password" placeholder="Password" required>
+        <div class="err" id="adminErr">❌ Incorrect username or password</div>
+        <div class="actions">
+          <button type="button" class="ghost" onclick="closeAdmin()">Cancel</button>
+          <button type="submit" class="btn">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const modal=document.getElementById('adminModal');
+    const form=document.getElementById('fakeAdminForm');
+    const err=document.getElementById('adminErr');
+
+    function openAdmin(){ modal.style.display='flex'; }
+    function closeAdmin(){ modal.style.display='none'; err.style.display='none'; }
+
+    form.onsubmit=(e)=>{ e.preventDefault(); err.style.display='block'; };
+    window.onkeydown=(e)=>{ if(e.key==='Escape') closeAdmin(); };
+    modal.onclick=(e)=>{ if(e.target===modal) closeAdmin(); };
+  </script>
 </body>
 </html>

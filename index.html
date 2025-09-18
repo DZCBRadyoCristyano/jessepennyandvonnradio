@@ -2,138 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>403 Forbidden</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Under Maintenance</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
   <style>
     body {
-      margin:0;
-      font-family:'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #ff9800, #ff5722);
-      color:#fff;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
-      min-height:100vh;
-      text-align:center;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
     }
+
     .container {
-      background:#fff;
-      color:#333;
-      padding:40px 30px;
-      border-radius:14px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.25);
-      max-width:500px;
-      width:90%;
-      animation:fadeIn 1s ease;
+      text-align: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      max-width: 450px;
+      width: 90%;
     }
+
     .logo {
-      max-width:120px;
-      margin-bottom:20px;
-    }
-    h1 {
-      font-size:64px;
-      margin:0;
-      color:#ff5722;
-      font-weight:800;
-    }
-    h2 {
-      font-size:22px;
-      margin:10px 0 20px;
-      color:#555;
-    }
-    p {
-      font-size:14px;
-      color:#666;
-      margin-bottom:25px;
-    }
-    .btn {
-      padding:12px 24px;
-      border:none;
-      border-radius:8px;
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
-      background:#ff9800;
-      color:#fff;
-      transition:background 0.3s;
-    }
-    .btn:hover {
-      background:#e67e00;
-    }
-    footer {
-      margin-top:20px;
-      font-size:12px;
-      color:#eee;
+      margin-bottom: 15px;
     }
 
-    /* Fake admin modal */
-    .modal-backdrop {
-      position:fixed; inset:0; display:none;
-      align-items:center; justify-content:center;
-      background:rgba(0,0,0,0.6); z-index:1000;
-    }
-    .modal {
-      background:#fff; padding:20px; border-radius:10px;
-      max-width:360px; width:90%; text-align:left;
-    }
-    .modal h3 { margin:0 0 10px; color:#ff5722; }
-    .modal input {
-      width:100%; padding:10px; border:1px solid #ccc;
-      border-radius:6px; margin-bottom:10px;
-    }
-    .modal .err { color:#b91c1c; display:none; font-size:13px; margin-bottom:10px; }
-    .modal .actions { text-align:right; }
-    .ghost {
-      background:#f1f1f1; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;
+    .logo img {
+      width: 120px;
+      height: auto;
     }
 
-    @keyframes fadeIn {
-      from {opacity:0; transform:translateY(20px);}
-      to {opacity:1; transform:translateY(0);}
+    .container i {
+      font-size: 50px;
+      margin-bottom: 10px;
+      color: #f39c12;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .message {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    form {
+      margin-top: 15px;
+      text-align: left;
+    }
+
+    .row {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .row i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    .row input {
+      width: 100%;
+      padding: 12px 12px 12px 35px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .row input::placeholder {
+      color: #bbb;
+    }
+
+    .row.button input {
+      background: #f39c12;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .row.button input:hover {
+      background: #d35400;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 13px;
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="https://jpvradio.online/JPV%20RADIO%20LOGO.png" alt="JPV Radio Logo" class="logo">
-    <h1>403</h1>
-    <h2>Forbidden</h2>
-    <p>You don’t have permission to access this resource.<br>Maintenance may be in progress.</p>
-    <button class="btn" onclick="openAdmin()">Admin Login</button>
-  </div>
-
-  <footer>
-    © 2025 Jesse Penny and Vonn Radio and Television Network Inc.
-  </footer>
-
-  <!-- Modal -->
-  <div class="modal-backdrop" id="adminModal">
-    <div class="modal">
-      <h3>Admin Login</h3>
-      <form id="fakeAdminForm">
-        <input type="text" placeholder="Username" required>
-        <input type="password" placeholder="Password" required>
-        <div class="err" id="adminErr">❌ Incorrect username or password</div>
-        <div class="actions">
-          <button type="button" class="ghost" onclick="closeAdmin()">Cancel</button>
-          <button type="submit" class="btn">Login</button>
-        </div>
-      </form>
+    <div class="logo">
+      <img src="https://jpvradio.online/JPV%20RADIO%20LOGO.png" alt="JPV Radio Logo">
     </div>
+    <i class="fas fa-tools"></i>
+    <div class="title">Under Maintenance</div>
+    <div class="message">
+      Jesse Penny and Vonn Radio and Television Network Inc.<br>
+      Our website is currently undergoing maintenance.<br>
+      Only administrators can log in below.
+    </div>
+
+    <form method="POST">
+      <div class="row">
+        <i class="fas fa-user"></i>
+        <input type="text" placeholder="Username" name="AdminUser" maxlength="50" required>
+      </div>
+      <div class="row">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Password" name="AdminPass" maxlength="50" required>
+      </div>
+      <div class="row button">
+        <input type="submit" value="Login" name="AdminLogin">
+      </div>
+    </form>
+
+    <div class="footer">© 2025 Jesse Penny and Vonn Radio and Television Network Inc.</div>
   </div>
 
   <script>
-    const modal=document.getElementById('adminModal');
-    const form=document.getElementById('fakeAdminForm');
-    const err=document.getElementById('adminErr');
-
-    function openAdmin(){ modal.style.display='flex'; }
-    function closeAdmin(){ modal.style.display='none'; err.style.display='none'; }
-
-    form.onsubmit=(e)=>{ e.preventDefault(); err.style.display='block'; };
-    window.onkeydown=(e)=>{ if(e.key==='Escape') closeAdmin(); };
-    modal.onclick=(e)=>{ if(e.target===modal) closeAdmin(); };
+    if(window.history.replaceState){
+      window.history.replaceState(null,null,window.location.href);
+    }
   </script>
 </body>
 </html>

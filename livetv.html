@@ -3,121 +3,139 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>JPV TV — LIVE BROADCAST</title>
+  <title>JPV TV — HLS.js Player</title>
   <style>
     body{
       margin:0;
-      font-family:Arial,Helvetica,sans-serif;
-      background:linear-gradient(135deg,#1a1a1a,#2d2d2d);
+      font-family:'Segoe UI',Arial,Helvetica,sans-serif;
+      background:#111;
       color:#fff;
       display:flex;
       flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
       min-height:100vh;
-      overflow-x:hidden;
     }
     header{
+      position:sticky;
+      top:0;
       display:flex;
       align-items:center;
-      gap:12px;
-      padding:16px;
+      justify-content:center;
+      gap:10px;
+      background:#1a1a1a;
+      padding:10px;
+      z-index:10;
+      border-bottom:2px solid orange;
     }
     header img{
-      height:50px;
-      border-radius:8px;
+      height:36px;
+      border-radius:6px;
     }
     header h1{
-      font-size:24px;
+      font-size:18px;
       margin:0;
-      color:orange;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
     .live-badge{
       background:red;
       color:#fff;
-      font-size:12px;
+      font-size:11px;
       font-weight:bold;
-      padding:4px 8px;
+      padding:2px 6px;
       border-radius:4px;
-      margin-left:10px;
-      animation: pulse 1s infinite;
+      animation:pulse 1s infinite;
     }
-    @keyframes pulse{
-      0%{opacity:1}50%{opacity:.5}100%{opacity:1}
-    }
+    @keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+
     .player{
       width:100%;
-      max-width:960px;
-      margin:0 auto;
-      padding:12px;
+      flex:1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:10px;
+      flex-direction:column;
     }
     video{
       width:100%;
-      max-height:70vh;
-      background:#000;
-      border:3px solid orange;
+      max-width:1000px;
+      border:none;
       border-radius:8px;
-      box-shadow:0 4px 20px rgba(0,0,0,.6);
+      background:#000;
+      box-shadow:0 0 20px rgba(255,165,0,0.3);
     }
+    .unmute-notice{
+      margin-top:10px;
+      font-size:14px;
+      color:orange;
+      font-weight:bold;
+      text-align:center;
+      animation:blink 1.2s infinite;
+    }
+    @keyframes blink{50%{opacity:0.4}}
+
     .brand{
       position:fixed;
       top:10px;
       right:10px;
-      background:rgba(255,165,0,0.1);
+      background:rgba(255,165,0,0.2);
       border:1px solid orange;
-      padding:6px 10px;
+      padding:4px 8px;
       border-radius:6px;
-      font-size:12px;
+      font-size:11px;
       color:orange;
       font-weight:bold;
+      z-index:5;
+    }
+    #countdown{
+      text-align:center;
+      font-size:15px;
+      font-weight:bold;
+      color:orange;
+      padding:6px;
     }
     .popup{
       position:fixed;
       top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.85);
+      background:rgba(0,0,0,0.9);
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:center;
       z-index:9999;
       visibility:hidden;
-      flex-direction:column;
       opacity:0;
-      transition:opacity .5s ease;
+      transition:opacity .4s ease;
+      padding:20px;
     }
-    .popup.show{
-      visibility:visible;
-      opacity:1;
-    }
+    .popup.show{visibility:visible;opacity:1;}
     .popup img{
-      max-width:90%;
-      max-height:80%;
-      border-radius:12px;
-      box-shadow:0 4px 30px rgba(0,0,0,.6);
-      border:3px solid orange;
-      animation-duration:1s;
+      width:100%;
+      max-width:420px;
+      border-radius:10px;
+      border:2px solid orange;
+      animation-duration:.8s;
       animation-fill-mode:both;
     }
     .popup button{
-      margin-top:16px;
-      padding:8px 16px;
+      margin-top:15px;
+      padding:10px 20px;
       background:orange;
       border:none;
       color:#000;
       font-weight:bold;
       border-radius:6px;
+      font-size:14px;
       cursor:pointer;
     }
-    #countdown{
-      margin:10px;
-      font-size:16px;
-      font-weight:bold;
-      color:orange;
-    }
+
     /* Animations */
-    @keyframes zoomIn{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
-    @keyframes rotateIn{0%{transform:rotate(-200deg);opacity:0}100%{transform:rotate(0);opacity:1}}
-    @keyframes slideDown{0%{transform:translateY(-100%);opacity:0}100%{transform:translateY(0);opacity:1}}
-    @keyframes bounceIn{0%,20%,40%,60%,80%,100%{animation-timing-function:cubic-bezier(0.215,.61,.355,1)}0%{transform:scale(.3);opacity:0}20%{transform:scale(1.1)}40%{transform:scale(.9)}60%{transform:scale(1.03)}80%{transform:scale(.97)}100%{transform:scale(1);opacity:1}}
+    @keyframes zoomIn{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+    @keyframes slideUp{0%{transform:translateY(100%);opacity:0}100%{transform:translateY(0);opacity:1}}
+    @keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
+    @keyframes rotateIn{0%{transform:rotate(-180deg);opacity:0}100%{transform:rotate(0);opacity:1}}
   </style>
 </head>
 <body>
@@ -129,7 +147,8 @@
   <div id="countdown">Starting in 5 seconds...</div>
 
   <div class="player">
-    <video id="video" controls playsinline></video>
+    <video id="video" controls playsinline muted autoplay></video>
+    <div class="unmute-notice">🔊 Video is muted — Tap speaker icon to unmute</div>
   </div>
 
   <div class="brand">Powered by VONNHOST</div>
@@ -139,7 +158,6 @@
     <button id="closePopup">X Close</button>
   </div>
 
-  <!-- HLS.js -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
   <script>
     const HLS_URL = 'https://live20.bozztv.com/akamaissh101/ssh101/jpvradio/playlist.m3u8';
@@ -150,55 +168,48 @@
     const countdownEl = document.getElementById('countdown');
     let clickCount = 0;
 
-    // Countdown timer (5 seconds)
+    // Countdown 5s
     let counter = 5;
-    const timer = setInterval(() => {
+    const timer = setInterval(()=>{
       counter--;
-      if(counter > 0){
+      if(counter>0){
         countdownEl.textContent = `Starting in ${counter} seconds...`;
       } else {
         clearInterval(timer);
         countdownEl.textContent = '';
         startStream();
       }
-    }, 1000);
+    },1000);
 
     function startStream(){
-      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      if(video.canPlayType('application/vnd.apple.mpegurl')){
         video.src = HLS_URL;
         video.play().catch(()=>{});
-      } else if (Hls.isSupported()) {
+      } else if(Hls.isSupported()){
         const hls = new Hls();
         hls.loadSource(HLS_URL);
         hls.attachMedia(video);
         video.play().catch(()=>{});
-      } else {
-        console.error('This browser does not support HLS');
       }
     }
 
-    // Random animations
-    const animations = ['zoomIn','rotateIn','slideDown','bounceIn'];
+    // Random animations for popup
+    const animations=['zoomIn','slideUp','fadeIn','rotateIn'];
     function triggerPopup(){
-      const anim = animations[Math.floor(Math.random()*animations.length)];
-      popupImg.style.animationName = anim;
+      const anim=animations[Math.floor(Math.random()*animations.length)];
+      popupImg.style.animationName=anim;
       popup.classList.add('show');
     }
 
-    // Show popup every 3 clicks or right-click
-    document.addEventListener('click', () => {
+    document.addEventListener('click',()=>{
       clickCount++;
-      if(clickCount % 3 === 0){
-        triggerPopup();
-      }
+      if(clickCount%3===0){triggerPopup();}
     });
-
-    document.addEventListener('contextmenu', (e) => {
+    document.addEventListener('contextmenu',(e)=>{
       e.preventDefault();
       triggerPopup();
     });
-
-    closePopup.addEventListener('click', () => {
+    closePopup.addEventListener('click',()=>{
       popup.classList.remove('show');
     });
   </script>

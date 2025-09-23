@@ -1,137 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maintenance Mode</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      text-align: center;
-      padding: 35px 30px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.2);
-      max-width: 420px;
-      width: 90%;
-      color: #333;
-    }
-
-    .logo img {
-      width: 130px;
-      height: auto;
-      margin-bottom: 15px;
-    }
-
-    .title {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 8px;
-      color: #e67e22;
-      text-transform: uppercase;
-    }
-
-    .message {
-      font-size: 15px;
-      line-height: 1.5;
-      margin-bottom: 25px;
-      color: #555;
-    }
-
-    form {
-      text-align: left;
-    }
-
-    .row {
-      position: relative;
-      margin-bottom: 15px;
-    }
-
-    .row i {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #aaa;
-    }
-
-    .row input {
-      width: 100%;
-      padding: 12px 12px 12px 35px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-      color: #333;
-    }
-
-    .row input:focus {
-      border-color: #e67e22;
-    }
-
-    .row.button input {
-      background: #e67e22;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      border: none;
-    }
-
-    .row.button input:hover {
-      background: #d35400;
-    }
-
-    .footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #888;
-    }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>JPV TV - HOME</title>
 </head>
 <body>
-  <div class="container">
-    <div class="logo">
-      <img src="https://jpvradio.online/JPV%20RADIO%20LOGO.png" alt="JPV Radio Logo">
-    </div>
-    <div class="title">Maintenance Mode</div>
-    <div class="message">
-      Jesse Penny and Vonn Radio and Television Network Inc.<br>
-      Our website is currently under scheduled maintenance.<br>
-      Administrators may log in below.
-    </div>
+  <video id="video" controls autoplay playsinline width="100%" height="auto"></video>
 
-    <form method="POST">
-      <div class="row">
-        <i class="fas fa-user"></i>
-        <input type="text" placeholder="Username" name="AdminUser" maxlength="50" required>
-      </div>
-      <div class="row">
-        <i class="fas fa-lock"></i>
-        <input type="password" placeholder="Password" name="AdminPass" maxlength="50" required>
-      </div>
-      <div class="row button">
-        <input type="submit" value="Login" name="AdminLogin">
-      </div>
-    </form>
-
-    <div class="footer">© 2025 Jesse Penny and Vonn Radio and Television Network Inc.</div>
-  </div>
-
+  <!-- HLS.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
   <script>
-    if(window.history.replaceState){
-      window.history.replaceState(null,null,window.location.href);
+    const HLS_URL = 'https://live20.bozztv.com/akamaissh101/ssh101/jpvradio/playlist.m3u8';
+    const video = document.getElementById('video');
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = HLS_URL;
+    } else if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(HLS_URL);
+      hls.attachMedia(video);
+    } else {
+      console.error('This browser does not support HLS');
     }
   </script>
 </body>
